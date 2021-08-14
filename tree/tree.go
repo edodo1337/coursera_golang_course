@@ -2,8 +2,8 @@ package tree
 
 import (
 	"fmt"
+	"io"
 	"io/fs"
-	"os"
 )
 
 type TreeNode struct {
@@ -34,21 +34,37 @@ func (treeNode *TreeNode) Path() string {
 	return treeNode.path
 }
 
-func (treeNode *TreeNode) Display(out *os.File) {
-	fmt.Fprintln(out, treeNode.outerPrefix+treeNode.innerPrefix+treeNode.fileInfo.Name())
+func (treeNode *TreeNode) IsDir() bool {
+	return treeNode.fileInfo.IsDir()
+}
+
+func (treeNode *TreeNode) Display(out io.Writer, printFiles bool) {
+	nodeInfo := treeNode.outerPrefix + treeNode.innerPrefix + treeNode.fileInfo.Name()
+
+	if printFiles && !treeNode.IsDir() {
+		size := treeNode.fileInfo.Size()
+		var sizeStr string
+		if size > 0 {
+			sizeStr = fmt.Sprintf("(%vb)", size)
+		} else {
+			sizeStr = "(empty)"
+		}
+		nodeInfo = nodeInfo + " " + sizeStr
+	}
+	fmt.Fprintln(out, nodeInfo)
 }
 
 func GetOuterPrefix(treeNode *TreeNode) string {
 	if treeNode.isLast {
-		return treeNode.outerPrefix + "\t"
+		return treeNode.outerPrefix + "	"
 	}
-	return treeNode.outerPrefix + "│   "
+	return treeNode.outerPrefix + "│" + "	"
 }
 
 func getInnerPrefix(isLast bool) string {
 	if isLast {
-		return "└──"
+		return "└───"
 	} else {
-		return "├──"
+		return "├───"
 	}
 }

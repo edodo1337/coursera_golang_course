@@ -2,6 +2,7 @@ package main
 
 import (
 	"hw1_tree/tree"
+	"io"
 	"io/ioutil"
 	"os"
 	"sort"
@@ -27,8 +28,12 @@ func excludeFiles(files []os.FileInfo) (result []os.FileInfo) {
 	return
 }
 
-func dfs(out *os.File, path string, fromNode *tree.TreeNode, printFiles bool) error {
-	fromNode.Display(out)
+func dfs(out io.Writer, path string, fromNode *tree.TreeNode, printFiles bool) error {
+	fromNode.Display(out, printFiles)
+
+	if !fromNode.IsDir() {
+		return nil
+	}
 
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
@@ -52,7 +57,7 @@ func dfs(out *os.File, path string, fromNode *tree.TreeNode, printFiles bool) er
 	return nil
 }
 
-func dirTree(out *os.File, path string, printFiles bool) error {
+func dirTree(out io.Writer, path string, printFiles bool) error {
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		return err
@@ -70,14 +75,16 @@ func dirTree(out *os.File, path string, printFiles bool) error {
 		nodePath := path + "/" + file.Name()
 		node := tree.NewTreeNode(nodePath, 0, file, isLast, "")
 
-		dfs(out, nodePath, node, printFiles)
+		if err := dfs(out, nodePath, node, printFiles); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 func main() {
-	out := os.Stdout
-	// out, _ := os.Create("output.txt")
+	// out := os.Stdout
+	out, _ := os.Create("output.txt")
 	defer out.Close()
 
 	if !(len(os.Args) == 2 || len(os.Args) == 3) {
