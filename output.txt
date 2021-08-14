@@ -1,0 +1,29 @@
+├──project
+│   ├──file.txt
+│   └──gopher.png
+├──static
+│   ├──a_lorem
+│   │   ├──dolor.txt
+│   │   ├──gopher.png
+│   │   └──ipsum
+│   │   	└──gopher.png
+│   ├──css
+│   │   └──body.css
+│   ├──empty.txt
+│   ├──html
+│   │   └──index.html
+│   ├──js
+│   │   └──site.js
+│   └──z_lorem
+│   	├──dolor.txt
+│   	├──gopher.png
+│   	└──ipsum
+│   		└──gopher.png
+├──zline
+│   ├──empty.txt
+│   └──lorem
+│   	├──dolor.txt
+│   	├──gopher.png
+│   	└──ipsum
+│   		└──gopher.png
+└──zzfile.txt
